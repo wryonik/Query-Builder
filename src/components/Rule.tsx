@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select from "./Select";
 
 export interface RuleProps {
@@ -19,8 +19,16 @@ export interface RuleProps {
     | "Is Empty"
     | "Is"
     | "Is not";
-  value?: string[];
+  value?: string;
+  id: any;
   type?: "rule";
+  updateRuleGroup: (
+    ruleGroupId: any,
+    ruleId: any,
+    operation: any,
+    updates: any
+  ) => void;
+  ruleGroupId: any
 }
 
 const fieldOptions = [
@@ -44,10 +52,32 @@ const conditionOptions = [
   "Is not",
 ];
 
-const RuleComponent = ({ field, condition, value, type }: RuleProps) => {
-  const [selectedField, setSelectedField] = useState("");
-  const [seletedOperator, setSelectedOperator] = useState("");
-  const [selectedValue, setSelectedValue] = useState("");
+const RuleComponent = ({
+  field,
+  condition,
+  value,
+  type,
+  updateRuleGroup,
+  id,
+  ruleGroupId
+}: RuleProps) => {
+  const [selectedField, setSelectedField] = useState(field);
+  const [seletedOperator, setSelectedOperator] = useState(condition);
+  const [selectedValue, setSelectedValue] = useState(value);
+
+  useEffect(() => {
+    setSelectedField(field);
+    setSelectedOperator(condition);
+    setSelectedValue(value)
+  }, [field, condition, value])
+
+  useEffect(() => {
+    updateRuleGroup(ruleGroupId, id, "UPDATE_RULE", {
+      field: selectedField,
+      condition: seletedOperator,
+      value: selectedValue,
+    });
+  }, [selectedField, selectedValue, seletedOperator]);
 
   return (
     <>
@@ -73,7 +103,7 @@ const RuleComponent = ({ field, condition, value, type }: RuleProps) => {
           <Select
             selectedOption={selectedValue}
             options={conditionOptions}
-            setSelectedOption={setSelectedOperator}
+            setSelectedOption={setSelectedValue}
           />
         </div>
       </div>
