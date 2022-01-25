@@ -3,6 +3,7 @@ import "./App.css";
 import RuleGroup, { RuleGroupProps } from "./components/RuleGroup";
 import Button from "./components/Button";
 import { v4 as uuidv4 } from "uuid";
+import { queryParser } from "./utils/queryParser";
 
 const newRuleGroup = Object.freeze({
   children: [],
@@ -14,7 +15,7 @@ const newRuleGroup = Object.freeze({
 export const newRule = {
   field: "Theme",
   condition: "Equals",
-  value: [],
+  value: '',
   type: "rule",
 };
 
@@ -26,6 +27,7 @@ export const UpdateRuleGroup = createContext({
 
 function App() {
   const [ruleGroups, setRuleGroups] = useState<any>([]);
+  const [queryString, setQueryString] = useState<any>("");
 
   const addRuleGroup = () => {
     setRuleGroups([...ruleGroups, { ...newRuleGroup, id: uuidv4() }]);
@@ -91,11 +93,12 @@ function App() {
   console.log(ruleGroups);
 
   useEffect(() => {
-    console.log("dksjds", ruleGroups);
+    setQueryString(queryParser(ruleGroups));
   }, [ruleGroups]);
 
   return (
     <div className="App">
+      {queryString}
       {/* <UpdateRuleGroup.Provider value={updateRuleGroup}> */}
       {ruleGroups.map((ruleGroup: RuleGroupProps) => (
         <RuleGroup
