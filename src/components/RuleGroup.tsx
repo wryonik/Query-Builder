@@ -67,7 +67,7 @@ const RuleGroup = ({
   }, [operation]);
 
   return (
-    <div className="bg-ruleGroupBg m-2 rounded p-4 flex flex-col border border-ruleGroupBorder">
+    <div className="bg-ruleGroupBg mb-6 rounded p-4 flex flex-col border border-ruleGroupBorder w-full">
       {children?.length > 1 ? (
         <TabGroup
           options={conjunctionOptions}
@@ -100,8 +100,6 @@ const RuleGroup = ({
             )}
             <img
               onClick={() => {
-                // let newArr = [...components];
-                // setComponents(newArr.splice(idx, 1));
                 updateRuleGroup(id, componentInfo.id, "REMOVE", {});
               }}
               src={DeleteIcon}
