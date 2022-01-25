@@ -62,22 +62,22 @@ const RuleComponent = ({
   ruleGroupId
 }: RuleProps) => {
   const [selectedField, setSelectedField] = useState(field);
-  const [seletedOperator, setSelectedOperator] = useState(condition);
+  const [seletedCondition, setSelectedCondition] = useState(condition);
   const [selectedValue, setSelectedValue] = useState(value);
 
   useEffect(() => {
     setSelectedField(field);
-    setSelectedOperator(condition);
+    setSelectedCondition(condition);
     setSelectedValue(value)
   }, [field, condition, value])
 
   useEffect(() => {
     updateRuleGroup(ruleGroupId, id, "UPDATE_RULE", {
       field: selectedField,
-      condition: seletedOperator,
+      condition: seletedCondition,
       value: selectedValue,
     });
-  }, [selectedField, selectedValue, seletedOperator]);
+  }, [selectedField, selectedValue, seletedCondition]);
 
   return (
     <>
@@ -93,9 +93,9 @@ const RuleComponent = ({
         <div className="w-64 flex flex-col mr-4">
           <label className="font-medium text-xs mb-2">Condition</label>
           <Select
-            selectedOption={seletedOperator}
+            selectedOption={seletedCondition}
             options={conditionOptions}
-            setSelectedOption={setSelectedOperator}
+            setSelectedOption={setSelectedCondition}
           />
         </div>
         <div className="w-64 flex flex-col mr-4">
