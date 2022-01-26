@@ -1,22 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Button from "./Button";
 import RuleComponent from "./Rule";
 import TabGroup from "./TabGroup";
 import DeleteIcon from "../assets/delete.svg";
 import { v4 as uuidv4 } from "uuid";
+import { ModalContext } from "../App";
 
 export interface RuleGroupProps {
   children: (RuleGroupProps | RuleProps)[];
   conjunction: "AND" | "OR";
   not: boolean;
   type: "rule_group";
-  updateRuleGroup: (
-    ruleGroupId: any,
-    ruleId: any,
-    operation: any,
-    updates: any
-  ) => void;
-  id: any;
+  id: string;
 }
 
 export interface RuleProps {
@@ -37,7 +32,7 @@ export interface RuleProps {
     | "Is Empty"
     | "Is"
     | "Is not";
-  value?: string[];
+  value?: string;
   type: "rule";
 }
 
@@ -49,21 +44,18 @@ const newRule = {
   id: uuidv4(),
   field: "Theme",
   condition: "Equals",
-  value: [],
+  value: "",
   type: "rule",
 };
 
-const RuleGroup = ({
-  children,
-  conjunction,
-  not,
-  updateRuleGroup,
-  id,
-}: RuleGroupProps) => {
+const RuleGroup = ({ children, conjunction, not, id }: RuleGroupProps) => {
   const [operation, setOperation] = useState("AND");
+  const { updateRuleGroup } = useContext(ModalContext);
 
   useEffect(() => {
-    updateRuleGroup(id, id, "UPDATE_RULE_GROUP", { conjunction: operation });
+    updateRuleGroup(id, id, "UPDATE_RULE_GROUP", {
+      conjunction: operation,
+    });
   }, [operation]);
 
   return (
@@ -75,7 +67,7 @@ const RuleGroup = ({
           setSelectedTab={setOperation}
         />
       ) : null}
-      {children?.map((componentInfo: FixMeLater, idx: any) => {
+      {children?.map((componentInfo: FixMeLater, idx: number) => {
         return (
           <div className="flex flex-row items-end">
             {componentInfo.type === "rule" ? (
@@ -86,7 +78,7 @@ const RuleGroup = ({
                 id={componentInfo.id}
                 ruleGroupId={id}
                 type="rule"
-                updateRuleGroup={updateRuleGroup}
+                // updateRuleGroup={updateRuleGroup}
               />
             ) : (
               <RuleGroup
@@ -94,13 +86,17 @@ const RuleGroup = ({
                 conjunction={componentInfo.conjunction}
                 not={componentInfo.not}
                 type="rule_group"
-                updateRuleGroup={updateRuleGroup}
                 id={componentInfo.id}
               />
             )}
             <img
               onClick={() => {
-                updateRuleGroup(id, componentInfo.id, "REMOVE", {});
+                updateRuleGroup(
+                  id,
+                  componentInfo.id,
+                  "REMOVE",
+                  {}
+                );
               }}
               src={DeleteIcon}
               alt="delete"
@@ -111,9 +107,12 @@ const RuleGroup = ({
       })}
       <Button
         label="+ Add filter"
-        onClick={() =>
-          updateRuleGroup(id, "", "ADD", { ...newRule, id: uuidv4() })
-        }
+        onClick={() => {
+          updateRuleGroup(id, "", "ADD", {
+            ...newRule,
+            id: uuidv4(),
+          });
+        }}
       />
     </div>
   );

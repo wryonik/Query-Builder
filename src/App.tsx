@@ -1,12 +1,14 @@
-import React, { useState, createContext, useEffect } from "react";
+import { useState, createContext, useEffect } from "react";
 import "./App.css";
-import RuleGroup, { RuleGroupProps } from "./components/RuleGroup";
+import RuleGroup from "./components/RuleGroup";
 import Button from "./components/Button";
 import { v4 as uuidv4 } from "uuid";
 import { queryParser } from "./utils/queryParser";
 import CrossIcon from "./assets/X.png";
+import { IRule, IRuleGroup } from "./components/types";
 
-const newRuleGroup = Object.freeze({
+const newRuleGroup: IRuleGroup = Object.freeze({
+  id: uuidv4(),
   children: [],
   conjunction: "AND",
   not: false,
@@ -20,22 +22,25 @@ export const newRule = {
   type: "rule",
 };
 
-type FixMeLater = any;
-
-export const UpdateRuleGroup = createContext({
-  updateRuleGroup: (idx: any, ruleGroup: any) => {},
+export const ModalContext = createContext({
+  updateRuleGroup: (
+    ruleGroupId: string,
+    ruleId: string,
+    operation: "ADD" | "REMOVE" | "UPDATE_RULE" | "UPDATE_RULE_GROUP",
+    updates: any
+  ) => {},
 });
 
 function App() {
-  const [ruleGroups, setRuleGroups] = useState<any>([]);
-  const [queryString, setQueryString] = useState<any>("");
-  const [toggleMore, setToggleMore] = useState<any>(true);
+  const [ruleGroups, setRuleGroups] = useState<IRuleGroup[]>([]);
+  const [queryString, setQueryString] = useState<string>("");
+  const [toggleMore, setToggleMore] = useState<boolean>(true);
 
   const addRuleGroup = () => {
     setRuleGroups([...ruleGroups, { ...newRuleGroup, id: uuidv4() }]);
   };
 
-  const removeRuleGroup = (idx: any) => {
+  const removeRuleGroup = (idx: number) => {
     let newArr = [...ruleGroups];
     setRuleGroups(newArr.splice(idx, 1));
   };
@@ -43,51 +48,42 @@ function App() {
   const onFinish = () => {};
 
   const updateRuleGroup = (
-    ruleGroupId: any,
-    ruleId: any,
+    ruleGroupId: string,
+    ruleId: string,
     operation: "ADD" | "REMOVE" | "UPDATE_RULE" | "UPDATE_RULE_GROUP",
     updates: any
   ) => {
-    // let tempRuleGroup = [...ruleGroups];
-
     let tempRuleGroup = JSON.parse(JSON.stringify(ruleGroups));
+    let ruleGroupIdx = tempRuleGroup.findIndex(
+      (ruleGroup: IRuleGroup) => ruleGroup.id === ruleGroupId
+    );
+    let ruleIdx = tempRuleGroup[ruleGroupIdx].children.findIndex(
+      (rule: IRule) => rule.id === ruleId
+    );
+
+    let ruleGroup = tempRuleGroup[ruleGroupIdx];
 
     switch (operation) {
       case "ADD":
-        tempRuleGroup.forEach((ruleGroup: any) => {
-          if (ruleGroup.id === ruleGroupId) {
-            let tempChild = [...ruleGroup.children];
-            ruleGroup.children = [...tempChild, updates];
-          }
-        });
+        ruleGroup.children = [...ruleGroup.children, updates];
         break;
+
       case "REMOVE":
-        tempRuleGroup.forEach((a: any, index: any) => {
-          if (a.id === ruleGroupId) {
-            a.children.forEach((rule: any, idx: any) => {
-              if (rule.id === ruleId) a.children.splice(idx, 1);
-            });
-          }
-        });
+        ruleGroup.children.splice(ruleIdx, 1);
         break;
+
       case "UPDATE_RULE":
-        [...tempRuleGroup].forEach((ruleGroup: any, idx: any) => {
-          if (ruleGroup.id === ruleGroupId) {
-            [...ruleGroup.children].forEach((rule: any, idx2: any) => {
-              if (rule.id === ruleId) {
-                tempRuleGroup[idx].children[idx2] = { ...rule, ...updates };
-                // rule = { ...rule, ...updates };
-              }
-            });
-          }
-        });
+        ruleGroup.children[ruleIdx] = {
+          ...ruleGroup.children[ruleIdx],
+          ...updates,
+        };
         break;
+
       case "UPDATE_RULE_GROUP":
-        [...tempRuleGroup].forEach((ruleGroup: any, idx: any) => {
-          if (ruleGroup.id === ruleGroupId) {
-            tempRuleGroup[idx] = { ...tempRuleGroup[idx], ...updates };
-          }
-        });
+        ruleGroup = {
+          ...ruleGroup,
+          ...updates,
+        };
         break;
     }
 
@@ -134,20 +130,21 @@ function App() {
         </div>
 
         <div className="p-8 flex flex-col items-start overflow-scroll w-full">
-          {ruleGroups.map((ruleGroup: RuleGroupProps) => (
-            <RuleGroup
-              updateRuleGroup={updateRuleGroup}
-              children={ruleGroup.children}
-              type={ruleGroup.type}
-              conjunction={ruleGroup.conjunction}
-              not={ruleGroup.not}
-              id={ruleGroup.id}
-            />
-          ))}
+          <ModalContext.Provider value={{ updateRuleGroup }}>
+            {ruleGroups.map((ruleGroup: IRuleGroup) => (
+              <RuleGroup
+                children={ruleGroup.children}
+                type={ruleGroup.type}
+                conjunction={ruleGroup.conjunction}
+                not={ruleGroup.not}
+                id={ruleGroup.id || ""}
+              />
+            ))}
+          </ModalContext.Provider>
 
           <Button label={"+ Add new group filter"} onClick={addRuleGroup} />
           <div className="flex flex-row pt-8 w-full justify-between">
-            <Button disabled={true} label={"Back"} onClick={addRuleGroup} />
+            <Button disabled={true} label={"Back"} />
             <Button label={"Finish"} onClick={onFinish} />
           </div>
         </div>

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ModalContext } from "../App";
 import Select from "./Select";
 
 export interface RuleProps {
@@ -20,15 +21,9 @@ export interface RuleProps {
     | "Is"
     | "Is not";
   value?: string;
-  id: any;
+  id: string;
   type?: "rule";
-  updateRuleGroup: (
-    ruleGroupId: any,
-    ruleId: any,
-    operation: any,
-    updates: any
-  ) => void;
-  ruleGroupId: any
+  ruleGroupId: string;
 }
 
 const fieldOptions = [
@@ -56,20 +51,19 @@ const RuleComponent = ({
   field,
   condition,
   value,
-  type,
-  updateRuleGroup,
   id,
-  ruleGroupId
+  ruleGroupId,
 }: RuleProps) => {
   const [selectedField, setSelectedField] = useState(field);
   const [seletedCondition, setSelectedCondition] = useState(condition);
   const [selectedValue, setSelectedValue] = useState(value);
+  const { updateRuleGroup } = useContext(ModalContext);
 
   useEffect(() => {
     setSelectedField(field);
     setSelectedCondition(condition);
-    setSelectedValue(value)
-  }, [field, condition, value])
+    setSelectedValue(value);
+  }, [field, condition, value]);
 
   useEffect(() => {
     updateRuleGroup(ruleGroupId, id, "UPDATE_RULE", {

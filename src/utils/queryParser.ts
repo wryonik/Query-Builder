@@ -1,3 +1,5 @@
+import { IRuleGroup } from "../components/types";
+
 // taken from https://stackoverflow.com/a/2970667
 const convertToCamelCase = (str: string) => {
     return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) => {
@@ -31,18 +33,18 @@ const conditionParser = (condition: string) => {
     }
 }
 
-export const queryParser = (ruleGroups: any) => {
+export const queryParser = (ruleGroups: IRuleGroup[]) => {
     let queryString = ""
     const separator = '::::'
-    ruleGroups.forEach((ruleGroup: any, idx: number) => {
+    ruleGroups.forEach((ruleGroup: IRuleGroup, ruleGroupIdx: number) => {
         let testQuery = ''
-        ruleGroup.children.forEach((rule: any, idx2: number) => {
+        ruleGroup.children.forEach((rule: any, ruleIdx: number) => {
             testQuery += ` "(field.${convertToCamelCase(rule.field)}) ${conditionParser(rule.condition)} \\"${rule.value.toString() || ""}"\\" `;
-            let test = idx2 < (ruleGroup.children.length - 1) ? conditionParser(ruleGroup.conjunction) : ''
+            let test = ruleIdx < (ruleGroup.children.length - 1) ? conditionParser(ruleGroup.conjunction) : ''
             testQuery += test
         });
 
-        let test2 = idx < (ruleGroups.length - 1) ? separator : ''
+        let test2 = ruleGroupIdx < (ruleGroups.length - 1) ? separator : ''
         queryString += testQuery + test2
     })
     return queryString

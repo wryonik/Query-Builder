@@ -1,7 +1,13 @@
-const TabGroup = ({ options, selectedTab, setSelectedTab }: any) => {
+interface TabGroupProps {
+  options: string[];
+  selectedTab: string;
+  setSelectedTab: (option: string) => void;
+}
+
+const TabGroup = ({ options, selectedTab, setSelectedTab }: TabGroupProps) => {
   return (
     <div className="text-left flex flex-row mb-7">
-      {options.map((option: any) => {
+      {options.map((option: string) => {
         return (
           <div
             key={option}

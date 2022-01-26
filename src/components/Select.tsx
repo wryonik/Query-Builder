@@ -1,20 +1,25 @@
 import { useState } from "react";
 import DownArrow from "../assets/downArrow.svg";
 
-const Select = ({ options, selectedOption, setSelectedOption }: any) => {
+interface SelectProps {
+  options: string[];
+  selectedOption: string;
+  setSelectedOption: any;
+}
+
+const defaultProps = {
+  options: [],
+  selectedOption: "",
+};
+
+const Select = ({
+  options,
+  selectedOption,
+  setSelectedOption,
+}: SelectProps) => {
   const [open, setOpen] = useState(false);
 
   return (
-    // <select
-    //   className="bg-selectFieldGrey text-white text-sm p-2 rounded"
-    //   onChange={(e) => setSelectedOption(e.target.value)}
-    // >
-    //   {options.map((option: any) => (
-    //     <option className="rounded bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
-    //       {option}
-    //     </option>
-    //   ))}
-    // </select>
     <div className="dropdown relative ">
       <div
         className="dropdown-toggle h-9 bg-selectFieldGrey text-backgroundText text-sm p-2 rounded font-medium flex justify-between"
@@ -29,7 +34,7 @@ const Select = ({ options, selectedOption, setSelectedOption }: any) => {
           ${open ? "" : "hidden"}
         `}
       >
-        {options.map((option: any) => (
+        {options.map((option: string) => (
           <li
             onClick={() => {
               setOpen(false);
@@ -44,5 +49,7 @@ const Select = ({ options, selectedOption, setSelectedOption }: any) => {
     </div>
   );
 };
+
+Select.defaultProps = defaultProps;
 
 export default Select;
