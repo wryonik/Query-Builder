@@ -1,5 +1,5 @@
 import { useState } from "react";
-import DownArrow from "../assets/downArrow.svg";
+import DownArrow from "assets/downArrow.svg"
 
 interface SelectProps {
   options: string[];

@@ -1,10 +1,10 @@
 import { useEffect, useState, useContext } from "react";
-import Button from "./Button";
+import Button from "./common/Button";
 import RuleComponent from "./Rule";
-import TabGroup from "./TabGroup";
-import DeleteIcon from "../assets/delete.svg";
+import TabGroup from "./common/TabGroup";
+import DeleteIcon from "assets/delete.svg";
 import { v4 as uuidv4 } from "uuid";
-import { ModalContext } from "../App";
+import { ModalContext } from "./QueryBuilder";
 
 export interface RuleGroupProps {
   children: (RuleGroupProps | RuleProps)[];
@@ -91,12 +91,7 @@ const RuleGroup = ({ children, conjunction, not, id }: RuleGroupProps) => {
             )}
             <img
               onClick={() => {
-                updateRuleGroup(
-                  id,
-                  componentInfo.id,
-                  "REMOVE",
-                  {}
-                );
+                updateRuleGroup(id, componentInfo.id, "REMOVE", {});
               }}
               src={DeleteIcon}
               alt="delete"

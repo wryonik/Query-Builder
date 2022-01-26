@@ -1,4 +1,4 @@
-import { IRuleGroup } from "../components/types";
+import { IRuleGroup } from "components/types";
 
 // taken from https://stackoverflow.com/a/2970667
 const convertToCamelCase = (str: string) => {

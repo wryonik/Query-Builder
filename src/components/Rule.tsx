@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { ModalContext } from "../App";
-import Select from "./Select";
+import { ModalContext } from "./QueryBuilder";
+import Select from "./common/Select";
 
 export interface RuleProps {
   field?:
