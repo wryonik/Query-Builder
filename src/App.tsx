@@ -17,6 +17,8 @@ function App() {
     setShowModal(false);
     setQueryString(queryStr);
     setQuery(queryArr);
+    console.log(query);
+    alert("RuleGroup array logged into console");
   };
 
   return (
@@ -31,7 +33,7 @@ function App() {
         ) : (
           <div className="flex flex-col items-center">
             {queryString ? (
-              <div className="mb-6 flex p-4 text-lg flex-row justify-center bg-selectFieldGrey rounded">
+              <div className="mb-6 flex p-4 text-lg flex-row justify-center items-center bg-selectFieldGrey rounded">
                 {queryString}
                 <img
                   src={CopyIcon}
@@ -39,7 +41,7 @@ function App() {
                     navigator.clipboard.writeText(queryString);
                     alert("Query String copied to clipboard");
                   }}
-                  className="h-6 w-6 ml-8"
+                  className="h-5 w-5 ml-8"
                   alt={"copy"}
                 />
               </div>

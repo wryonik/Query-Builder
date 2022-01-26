@@ -24,7 +24,9 @@ const Select = ({
   return (
     <div className="dropdown relative">
       <div
-        className="dropdown-toggle h-9 bg-selectFieldGrey text-backgroundText text-sm p-2 rounded font-medium flex justify-between"
+        className={`dropdown-toggle h-9 bg-selectFieldGrey ${
+          selectedOption ? "text-white" : "text-backgroundText"
+        } text-sm p-2 rounded font-medium flex justify-between`}
         onClick={() => {
           if (!disabled) setOpen(!open);
         }}
