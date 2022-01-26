@@ -1,10 +1,11 @@
-import { useState } from "react";
-import DownArrow from "assets/downArrow.svg"
+import { useEffect, useState } from "react";
+import DownArrow from "assets/downArrow.svg";
 
 interface SelectProps {
   options: string[];
   selectedOption: string;
   setSelectedOption: any;
+  disabled?: boolean;
 }
 
 const defaultProps = {
@@ -16,14 +17,17 @@ const Select = ({
   options,
   selectedOption,
   setSelectedOption,
+  disabled,
 }: SelectProps) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="dropdown relative ">
+    <div className="dropdown relative">
       <div
         className="dropdown-toggle h-9 bg-selectFieldGrey text-backgroundText text-sm p-2 rounded font-medium flex justify-between"
-        onClick={() => setOpen(!open)}
+        onClick={() => {
+          if (!disabled) setOpen(!open);
+        }}
       >
         {selectedOption ? selectedOption : "Select One"}
         <img className="w-2 ml-2" src={DownArrow} alt="" />
@@ -36,6 +40,7 @@ const Select = ({
       >
         {options.map((option: string) => (
           <li
+            key={option}
             onClick={() => {
               setOpen(false);
               setSelectedOption(option);

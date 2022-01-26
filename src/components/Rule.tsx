@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { ModalContext } from "./QueryBuilder";
 import Select from "./common/Select";
+import { IFilter } from "./types";
+import InputField from "./common/InputField";
 
 export interface RuleProps {
   field?:
@@ -26,27 +28,6 @@ export interface RuleProps {
   ruleGroupId: string;
 }
 
-const fieldOptions = [
-  "Theme",
-  "Sub-theme",
-  "Reason",
-  "Language",
-  "Source",
-  "Rating",
-  "Time Period",
-  "Customer ID",
-];
-
-const conditionOptions = [
-  "Equals",
-  "Does not equal",
-  "Like",
-  "Not like",
-  "Is Empty",
-  "Is",
-  "Is not",
-];
-
 const RuleComponent = ({
   field,
   condition,
@@ -55,15 +36,21 @@ const RuleComponent = ({
   ruleGroupId,
 }: RuleProps) => {
   const [selectedField, setSelectedField] = useState(field);
-  const [seletedCondition, setSelectedCondition] = useState(condition);
+  const [seletedCondition, setSelectedCondition] = useState(
+    condition || "Equals"
+  );
   const [selectedValue, setSelectedValue] = useState(value);
-  const { updateRuleGroup } = useContext(ModalContext);
+  const [filterOptions, setFilterOptions] = useState<IFilter>();
+  const { updateRuleGroup, filtersConfig } = useContext(ModalContext);
 
   useEffect(() => {
-    setSelectedField(field);
-    setSelectedCondition(condition);
-    setSelectedValue(value);
-  }, [field, condition, value]);
+    let newFilterOptions: IFilter =
+      filtersConfig.find((filter: IFilter) => filter.field === selectedField) ||
+      filtersConfig[0];
+    setFilterOptions(newFilterOptions);
+    setSelectedCondition("Equals");
+    setSelectedValue("");
+  }, [selectedField]);
 
   useEffect(() => {
     updateRuleGroup(ruleGroupId, id, "UPDATE_RULE", {
@@ -80,24 +67,27 @@ const RuleComponent = ({
           <label className="font-medium text-xs mb-2">Field</label>
           <Select
             selectedOption={selectedField}
-            options={fieldOptions}
+            options={filtersConfig.map((filter: IFilter) => filter.field)}
             setSelectedOption={setSelectedField}
           />
         </div>
         <div className="w-64 flex flex-col mr-4">
           <label className="font-medium text-xs mb-2">Condition</label>
           <Select
+            disabled={!selectedField}
             selectedOption={seletedCondition}
-            options={conditionOptions}
+            options={filterOptions?.conditions}
             setSelectedOption={setSelectedCondition}
           />
         </div>
         <div className="w-64 flex flex-col mr-4">
           <label className="font-medium text-xs mb-2">Criteria</label>
-          <Select
-            selectedOption={selectedValue}
-            options={conditionOptions}
-            setSelectedOption={setSelectedValue}
+          <InputField
+            selectedValue={selectedValue}
+            options={filterOptions?.options}
+            setSelectedValue={setSelectedValue}
+            disabled={!selectedField}
+            type={filterOptions?.type}
           />
         </div>
       </div>

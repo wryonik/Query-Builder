@@ -15,8 +15,8 @@ const newRuleGroup: IRuleGroup = Object.freeze({
 });
 
 export const newRule = {
-  field: "Theme",
-  condition: "Equals",
+  field: "",
+  condition: "",
   value: "",
   type: "rule",
 };
@@ -28,9 +28,20 @@ export const ModalContext = createContext({
     operation: "ADD" | "REMOVE" | "UPDATE_RULE" | "UPDATE_RULE_GROUP",
     updates: any
   ) => {},
+  filtersConfig: [],
 });
 
-const QueryBuilder = ({ handleClose, handleFinish }: any) => {
+interface QueryBuilderProps {
+  handleClose: () => void;
+  handleFinish: (queryString: string, ruleGroups: IRuleGroup[]) => void;
+  filtersConfig: any;
+}
+
+const QueryBuilder = ({
+  handleClose,
+  handleFinish,
+  filtersConfig,
+}: QueryBuilderProps) => {
   const [ruleGroups, setRuleGroups] = useState<IRuleGroup[]>([]);
   const [queryString, setQueryString] = useState<string>("");
   const [toggleMore, setToggleMore] = useState<boolean>(true);
@@ -77,8 +88,8 @@ const QueryBuilder = ({ handleClose, handleFinish }: any) => {
         break;
 
       case "UPDATE_RULE_GROUP":
-        ruleGroup = {
-          ...ruleGroup,
+        tempRuleGroup[ruleGroupIdx] = {
+          ...tempRuleGroup[ruleGroupIdx],
           ...updates,
         };
         break;
@@ -92,13 +103,11 @@ const QueryBuilder = ({ handleClose, handleFinish }: any) => {
   }, [ruleGroups]);
 
   return (
-    <div className="w-235 h-200 bg-modalBg flex flex-col items-start justify-between">
-      <div className="bg-tabgroupVoilet py-6 px-8 w-full flex flex-col items-start">
+    <div className="w-235 h-200 bg-modalBg flex flex-col rounded items-start justify-between">
+      <div className="bg-tabgroupVoilet py-6 px-8 w-full rounded-t flex flex-col items-start">
         <div className="flex flex-row justify-between items-center w-full">
           <div className="text-lg">Build your Query</div>
-          <div
-            className={`bg-darkVoilet text-white rounded text-sm p-1 w-6 h-6`}
-          >
+          <div className={`bg-darkVoilet text-white rounded text-sm w-6 h-6`}>
             <img src={CrossIcon} alt="cross" onClick={handleClose} />
           </div>
         </div>
@@ -122,13 +131,18 @@ const QueryBuilder = ({ handleClose, handleFinish }: any) => {
               {toggleMore ? "more..." : "less..."}
             </div>
           </div>
-        ) : null}
+        ) : (
+          <div className="text-indigo-300 text-sm">
+            The query you build will be saved in your active view
+          </div>
+        )}
       </div>
 
       <div className="p-8 flex flex-col items-start overflow-scroll w-full">
-        <ModalContext.Provider value={{ updateRuleGroup }}>
+        <ModalContext.Provider value={{ updateRuleGroup, filtersConfig }}>
           {ruleGroups.map((ruleGroup: IRuleGroup) => (
             <RuleGroup
+              key={ruleGroup.id || uuidv4()}
               children={ruleGroup.children}
               type={ruleGroup.type}
               conjunction={ruleGroup.conjunction}

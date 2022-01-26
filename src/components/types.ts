@@ -28,3 +28,18 @@ export interface IRuleGroup {
     not: boolean;
     type: "rule_group";
 }
+
+export interface IFilter {
+    field:
+    | "Theme"
+    | "Sub-theme"
+    | "Reason"
+    | "Language"
+    | "Source"
+    | "Rating"
+    | "Time Period"
+    | "Customer ID";
+    conditions: string[];
+    type: "select" | "text" | "date" | "number";
+    options?: string[];
+}

@@ -1,3 +1,4 @@
+import { CONDITION_OPTIONS } from './../constants';
 import { IRuleGroup } from "components/types";
 
 // taken from https://stackoverflow.com/a/2970667
@@ -10,20 +11,36 @@ const convertToCamelCase = (str: string) => {
 
 const conditionParser = (condition: string) => {
     switch (condition) {
-        case "Equals":
+        case CONDITION_OPTIONS.EQUALS:
             return "==";
-        case "Does not equal":
+        case CONDITION_OPTIONS.DOES_NOT_EQUALS:
             return "!=";
-        case "Like":
+        case CONDITION_OPTIONS.LIKE:
             return "LIKE";
-        case "Not like":
+        case CONDITION_OPTIONS.NOT_LIKE:
             return "NOT LIKE";
-        case "Is Empty":
+        case CONDITION_OPTIONS.IS_EMPTY:
             return "IS EMPTY";
-        case "Is":
+        case CONDITION_OPTIONS.IS:
             return "IS";
-        case "Is not":
+        case CONDITION_OPTIONS.IS_NOT:
             return "IS NOT";
+        case CONDITION_OPTIONS.GREATER_THAN:
+            return ">";
+        case CONDITION_OPTIONS.GREATER_THAN_OR_EQUAL_TO:
+            return ">=";
+        case CONDITION_OPTIONS.LESS_THAN:
+            return "<";
+        case CONDITION_OPTIONS.LESS_THAN_OR_EQUAL_TO:
+            return "<=";
+        case CONDITION_OPTIONS.CONTAINS:
+            return "CONTAINS";
+        case CONDITION_OPTIONS.DOES_NOT_CONTAINS:
+            return "DOES NOT CONTAINS";
+        case CONDITION_OPTIONS.AFTER:
+            return "AFTER";
+        case CONDITION_OPTIONS.BEFORE:
+            return "BEFORE";
         case "AND":
             return "&&";
         case "OR":
@@ -37,15 +54,16 @@ export const queryParser = (ruleGroups: IRuleGroup[]) => {
     let queryString = ""
     const separator = '::::'
     ruleGroups.forEach((ruleGroup: IRuleGroup, ruleGroupIdx: number) => {
-        let testQuery = ''
+        let ruleGroupQuery = ''
         ruleGroup.children.forEach((rule: any, ruleIdx: number) => {
-            testQuery += ` "(field.${convertToCamelCase(rule.field)}) ${conditionParser(rule.condition)} \\"${rule.value.toString() || ""}"\\" `;
-            let test = ruleIdx < (ruleGroup.children.length - 1) ? conditionParser(ruleGroup.conjunction) : ''
-            testQuery += test
+            ruleGroupQuery += ` "(field.${convertToCamelCase(rule.field)}) ${conditionParser(rule.condition)} \\"${rule.value.toString() || ""}"\\" `;
+            let ruleQueryEnding = ruleIdx < (ruleGroup.children.length - 1) ? conditionParser(ruleGroup.conjunction) : ''
+            ruleGroupQuery += ruleQueryEnding
         });
 
-        let test2 = ruleGroupIdx < (ruleGroups.length - 1) ? separator : ''
-        queryString += testQuery + test2
+        let queryEnding = ruleGroupIdx < (ruleGroups.length - 1) ? separator : ''
+        if (ruleGroup.not) ruleGroupQuery = `!(${ruleGroupQuery})`
+        queryString += ruleGroupQuery + queryEnding
     })
     return queryString
 }

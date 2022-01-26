@@ -42,8 +42,8 @@ const conjunctionOptions = ["AND", "OR"];
 
 const newRule = {
   id: uuidv4(),
-  field: "Theme",
-  condition: "Equals",
+  field: "",
+  condition: "",
   value: "",
   type: "rule",
 };
@@ -69,7 +69,7 @@ const RuleGroup = ({ children, conjunction, not, id }: RuleGroupProps) => {
       ) : null}
       {children?.map((componentInfo: FixMeLater, idx: number) => {
         return (
-          <div className="flex flex-row items-end">
+          <div key={componentInfo.id} className="flex flex-row items-end">
             {componentInfo.type === "rule" ? (
               <RuleComponent
                 field={componentInfo.field}

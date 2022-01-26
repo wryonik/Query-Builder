@@ -4,11 +4,14 @@ import Button from "./components/common/Button";
 import QueryBuilder from "./components/QueryBuilder";
 import { IRuleGroup } from "./components/types";
 import CopyIcon from "./assets/copy.svg";
+import { filtersConfig } from "config";
 
 function App() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [queryString, setQueryString] = useState<string>("");
   const [query, setQuery] = useState<IRuleGroup[]>([]);
+
+  console.log(query)
 
   const handleClose = () => setShowModal(false);
 
@@ -22,7 +25,7 @@ function App() {
     <>
       <div className="App">
         {showModal ? (
-          <QueryBuilder handleClose={handleClose} handleFinish={handleFinish} />
+          <QueryBuilder filtersConfig={filtersConfig} handleClose={handleClose} handleFinish={handleFinish} />
         ) : (
           <div className="flex flex-col items-center">
             {queryString ? (

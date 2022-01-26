@@ -1,0 +1,17 @@
+export const CONDITION_OPTIONS = Object.freeze({
+    EQUALS: "Equals",
+    DOES_NOT_EQUALS: "Does not equals",
+    CONTAINS: "Contains",
+    DOES_NOT_CONTAINS: "Does not Contains",
+    IS: "Is",
+    IS_NOT: "Is Not",
+    LIKE: "Like",
+    NOT_LIKE: "Not Like",
+    GREATER_THAN: "Greater Than",
+    GREATER_THAN_OR_EQUAL_TO: "Greater Than or Equal to",
+    LESS_THAN: "Less Than",
+    LESS_THAN_OR_EQUAL_TO: "Less Than or Equal to",
+    AFTER: "After",
+    BEFORE: 'Before',
+    IS_EMPTY: "Is Empty",
+})
