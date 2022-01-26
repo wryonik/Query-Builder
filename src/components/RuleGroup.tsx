@@ -36,8 +36,6 @@ export interface RuleProps {
   type: "rule";
 }
 
-type FixMeLater = any;
-
 const conjunctionOptions = ["AND", "OR"];
 
 const newRule = {
@@ -67,7 +65,7 @@ const RuleGroup = ({ children, conjunction, not, id }: RuleGroupProps) => {
           setSelectedTab={setOperation}
         />
       ) : null}
-      {children?.map((componentInfo: FixMeLater, idx: number) => {
+      {children?.map((componentInfo: any) => {
         return (
           <div key={componentInfo.id} className="flex flex-row items-end">
             {componentInfo.type === "rule" ? (
@@ -78,7 +76,6 @@ const RuleGroup = ({ children, conjunction, not, id }: RuleGroupProps) => {
                 id={componentInfo.id}
                 ruleGroupId={id}
                 type="rule"
-                // updateRuleGroup={updateRuleGroup}
               />
             ) : (
               <RuleGroup

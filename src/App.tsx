@@ -11,8 +11,6 @@ function App() {
   const [queryString, setQueryString] = useState<string>("");
   const [query, setQuery] = useState<IRuleGroup[]>([]);
 
-  console.log(query)
-
   const handleClose = () => setShowModal(false);
 
   const handleFinish = (queryStr: string, queryArr: IRuleGroup[]) => {
@@ -25,7 +23,11 @@ function App() {
     <>
       <div className="App">
         {showModal ? (
-          <QueryBuilder filtersConfig={filtersConfig} handleClose={handleClose} handleFinish={handleFinish} />
+          <QueryBuilder
+            filtersConfig={filtersConfig}
+            handleClose={handleClose}
+            handleFinish={handleFinish}
+          />
         ) : (
           <div className="flex flex-col items-center">
             {queryString ? (
